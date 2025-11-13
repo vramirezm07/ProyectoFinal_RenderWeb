@@ -1,0 +1,11 @@
+Model Information:
+* title:	Shadow The Hedgehog
+* source:	https://sketchfab.com/3d-models/shadow-the-hedgehog-a570c0f3028548d7b8fe19ddccb9ff81
+* author:	Julien_23 (https://sketchfab.com/Julien_23)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Shadow The Hedgehog" (https://sketchfab.com/3d-models/shadow-the-hedgehog-a570c0f3028548d7b8fe19ddccb9ff81) by Julien_23 (https://sketchfab.com/Julien_23) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
