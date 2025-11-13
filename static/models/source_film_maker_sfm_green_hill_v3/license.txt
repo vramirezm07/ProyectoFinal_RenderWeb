@@ -1,0 +1,11 @@
+Model Information:
+* title:	(Source Film Maker/ SFM) Green Hill V3
+* source:	https://sketchfab.com/3d-models/source-film-maker-sfm-green-hill-v3-66624305ddee4790aa10d198a99fc1c7
+* author:	SonicCrossTheWorlds (https://sketchfab.com/SonicCrossTheWorlds)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "(Source Film Maker/ SFM) Green Hill V3" (https://sketchfab.com/3d-models/source-film-maker-sfm-green-hill-v3-66624305ddee4790aa10d198a99fc1c7) by SonicCrossTheWorlds (https://sketchfab.com/SonicCrossTheWorlds) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
