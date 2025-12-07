@@ -360,15 +360,6 @@ if (movementVector.lengthSq() > 0.0001) {
   duckyGroup.rotation.y = THREE.MathUtils.lerp(duckyGroup.rotation.y, targetAngle, turnSpeed);
 }
 
-//    if (playerMovement.forward) { duckShape.position.z -= playerMovement.speed }
-//    if (playerMovement.backward) { duckShape.position.z += playerMovement.speed }
-//    if (playerMovement.left) { duckShape.position.x -= playerMovement.speed }
-//    if (playerMovement.right) { duckShape.position.x += playerMovement.speed }
-//    if (playerMovement.jump) { duckShape.position.y += playerMovement.speed }
-
-//    // Player
-//    duckBody.position.copy(duckBody.position)
-//    duckBody.quaternion.copy(duckBody.quaternion)
 
    if (playerMovement.forward)  vz -= moveSpeed
     if (playerMovement.backward) vz += moveSpeed
