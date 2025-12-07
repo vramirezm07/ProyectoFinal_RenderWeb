@@ -46,8 +46,9 @@ scene.background = new THREE.Color(0x02030a)
 scene.fog = new THREE.FogExp2(0x02030a, 0.055) // color, densidad
 
 // Ambient muy tenue y azul
-const ambientLight = new THREE.AmbientLight(0x223355, 0.4)
+const ambientLight = new THREE.AmbientLight(0x223344, 0.25)
 scene.add(ambientLight)
+
 
 // Moon light (direccional)
 const moonLight = new THREE.DirectionalLight(0x88aaff, 0.6)
@@ -56,7 +57,15 @@ moonLight.castShadow = true
 scene.add(moonLight)
 
 // Luz que sigue al jugador (linterna)
-const flashlight = new THREE.SpotLight(0xaaaaff, 5, 10, Math.PI * 0.2, 0.5, 2)
+const flashlight = new THREE.SpotLight(
+  0x8daaff,    // azul pálido
+  2.2,         // intensidad baja
+  12,          // distancia corta, se pierde rápido
+  Math.PI*0.11, // cono MUY estrecho
+  0.85,        // borde suave
+  2            // caída real
+);
+
 flashlight.castShadow = true
 scene.add(flashlight)
 
@@ -66,7 +75,6 @@ scene.add(flashlightTarget)
 
 // asignar el target del spotLight
 flashlight.target = flashlightTarget
-
 
 
 
@@ -202,7 +210,7 @@ gltfLoader.load(
   function (gltf) {
     gltf.scene.scale.set(0.1, 0.1, 0.1);
     gltf.scene.position.set(0, 0, -25);
-    scene.add(gltf.scene); 3
+    scene.add(gltf.scene); 
 
 
     // Crear un body físico estático para el zorro pero que NO colisione
@@ -293,7 +301,7 @@ const numSegments = 12;
 
 // crea la forma y el body dinámico
 const duckShape = new CANNON.Sphere(0.8);
-const duckBody = new CANNON.Body({ mass: 8 });
+const duckBody = new CANNON.Body({ mass: 5 });
 duckBody.addShape(duckShape); // puede añadirse con offsets para shapes compuestos
 // posición inicial (coincidir con la posición del group)
 duckBody.position.set(0, 0.9, 0);
@@ -301,7 +309,7 @@ world.addBody(duckBody);
 flashlight.target = duckyGroup
 
 
-// opcional: cuerpo estático para el suelo (evita que atraviese)
+// cuerpo estático para el suelo (evita que atraviese)
 const groundBody = new CANNON.Body({ mass: 0 });
 groundBody.addShape(new CANNON.Plane());
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
@@ -352,12 +360,22 @@ gsap.to(moonLight, {
 });
 
 gsap.to(scene.fog.color, {
-  r: 0.1,
-  g: 0.05,
-  b: 0.2,
-  duration: 10,
+  r: 0.03,
+  g: 0.03,
+  b: 0.06,
+  duration: 6,
+  repeat: -1,
+  yoyo: true,
 });
 
+
+gsap.to(flashlight, {
+  intensity: 1.8,
+  duration: 1.5,
+  repeat: -1,
+  yoyo: true,
+  ease: "sine.inOut"
+});
 
 /**
 * Player Controls
@@ -417,7 +435,7 @@ const tick = () => {
 
   // sincronizar Three.js con physics (Ducky)
   duckyGroup.position.copy(duckBody.position)
-  duckyGroup.position.y -= 0.9 // ajustar offset si el modelo no está centrado en el origen
+  duckyGroup.position.y -= 0.4 // ajustar offset si el modelo no está centrado en el origen
 
   // Model animation
   if (mixer) {
