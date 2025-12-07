@@ -117,7 +117,7 @@ const gltfLoader = new GLTFLoader();
 
 
 gltfLoader.load(
-  '/models/Level_One/scene02.glb',
+  '/models/Level_One/scene022.glb',
   function (glb)  {
        scene.add(glb.scene);
        
@@ -204,7 +204,7 @@ scene.add(duckyGroup)
 // ...existing code...
 
 gltfLoader.load(
-  '/models/Ducky/Ducky_Cuerpo.glb',
+  '/models/Ducky/Ducky_Cuerpo_c.glb',
   function (glb)  {
        // añade la pieza al grupo para que comparta el mismo sistema de referencia
        duckyGroup.add(glb.scene)
