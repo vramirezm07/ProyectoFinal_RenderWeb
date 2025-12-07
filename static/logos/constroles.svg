@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 534.87 156.35">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 18px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        fill: #fff;
+        font-family: Futura100LXT-Bold, 'Futura 100 LXT';
+        font-weight: 700;
+      }
+
+      .cls-2 {
+        letter-spacing: -.03em;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        font-size: 20px;
+      }
+
+      .cls-5 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-6 {
+        fill: #333;
+      }
+
+      .cls-4 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <g id="Capa_1" data-name="Capa 1">
+    <rect class="cls-6" y="81.52" width="74.83" height="74.83"/>
+    <rect class="cls-6" x="80.63" y="81.24" width="74.83" height="74.83"/>
+    <rect class="cls-6" x="161.27" y="81.52" width="74.83" height="74.83"/>
+    <rect class="cls-6" x="287.06" y="86.26" width="247.81" height="65.35"/>
+  </g>
+  <g id="Capa_3" data-name="Capa 3">
+    <rect class="cls-6" x="81.11" width="74.83" height="74.83"/>
+    <text class="cls-2" transform="translate(107.39 43.08)"><tspan x="0" y="0">W</tspan></text>
+    <text class="cls-4" transform="translate(29.67 124.6)"><tspan x="0" y="0">A</tspan></text>
+    <text class="cls-3" transform="translate(112.02 124.31)"><tspan x="0" y="0">S</tspan></text>
+    <text class="cls-1" transform="translate(191.93 124.03)"><tspan x="0" y="0">D</tspan></text>
+    <text class="cls-3" transform="translate(363.28 125.73)"><tspan x="0" y="0">SpaceBa</tspan><tspan class="cls-5" x="86.54" y="0">r</tspan></text>
+  </g>
+</svg>
