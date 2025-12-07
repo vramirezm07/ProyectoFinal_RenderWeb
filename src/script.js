@@ -211,8 +211,16 @@ gltfLoader.load(
 let foxScene = null;
 let foxVelocityZ = 0;
 const foxMaxSpeed = 3; // velocidad máxima del zorro (m/s)
-const foxInitialZ = -25; // posición inicial Z del zorro
+const foxInitialZ = -15; // posición inicial Z del zorro
 let foxBody = null; // guardar referencia
+
+// --- NUEVO: rango mínimo/máximo garantizado para que siempre vaya rápido ---
+const FOX_MIN_SPEED = 2.5; // velocidad mínima (ajusta si quieres más rápido)
+const FOX_MAX_SPEED = 5.0; // velocidad máxima real usada por generateFoxSpeed
+function generateFoxSpeed() {
+  // genera magnitud entre min..max y siempre POSITIVA (va hacia +Z desde foxInitialZ)
+  return Math.random() * (FOX_MAX_SPEED - FOX_MIN_SPEED) + FOX_MIN_SPEED;
+}
 
 gltfLoader.load(
   '/models/Fox/glTF/Fox.gltf',
@@ -251,11 +259,10 @@ gltfLoader.load(
     const action = mixer.clipAction(gltf.animations[1]);
     action.play();
 
-    // generar velocidad inicial random
-    foxVelocityZ = (Math.random() - 0.5) * 2 * foxMaxSpeed
+    // generar velocidad inicial random (usar la función nueva)
+    foxVelocityZ = generateFoxSpeed();
   }
 );
-
 
 
 // Grupo para Ducky
@@ -323,6 +330,36 @@ const groundBody = new CANNON.Body({ mass: 0 });
 groundBody.addShape(new CANNON.Plane());
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
 world.addBody(groundBody);
+
+
+function initGame() {
+  // Reinicia posiciones
+  duckBody.position.set(0, 0.9, 0);
+  duckBody.velocity.set(0, 0, 0);
+  duckyGroup.position.set(0, 0, 0);
+  duckyGroup.rotation.set(0, 0, 0);
+
+  if (foxScene && foxBody) {
+    foxScene.position.set(0, 0, foxInitialZ);
+    foxBody.position.set(foxScene.position.x, foxScene.position.y, foxScene.position.z);
+    foxVelocityZ = generateFoxSpeed();
+  }
+
+  // Reinicia animaciones
+  if (tlPataDer && tlPataIzq && tlMoño) {
+    tlPataDer.pause(); tlPataDer.progress(0);
+    tlPataIzq.pause(); tlPataIzq.progress(0);
+    tlMoño.pause(); tlMoño.progress(0);
+    isMoving = false;
+  }
+
+
+
+  // Reinicia el juego
+  gameRunning = false;
+}
+
+
 
 let tlPataDer, tlPataIzq, tlMoño;
 let isMoving = false;
@@ -429,25 +466,43 @@ window.addEventListener('keyup', (event) => {
   }
 });
 
+const music = document.getElementById('bgMusic');
+const musicStart = document.getElementById('musicStart');
+
 // función para iniciar el juego
 function startGame(){
   gameRunning = true;
   document.getElementById('startScreen').style.display = 'none';
 
-
-  // velocidad inicial del zorro
-  foxVelocityZ = Math.random() * foxMaxSpeed * 6;
+  music.play(); // empieza la música
 }
 
 function endGame(){
   gameRunning = false;
-  alert('¡El zorro te atrapó!');
-  resetGame();
+  document.getElementById('gameOverScreen').style.display = 'flex';
+  musicStart.play();
+  music.pause();
 }
 
 function resetGame(){
-  location.reload();
+  initGame();
+  document.getElementById('gameOverScreen').style.display = 'none';
+  gameRunning = true; 
+  music.play();
+  musicStart.pause();
+
+  // asegurar velocidad rápida consistente en reset
+  foxVelocityZ = generateFoxSpeed();
 }
+
+function victoryGame() {
+  gameRunning = false;
+  document.getElementById('victoryScreen').style.display = 'flex';
+  musicStart.play();
+  music.pause();
+}
+
+
 
 
 /**
@@ -465,7 +520,11 @@ const tick = () => {
 
   world.step(fixedTimeStep, deltaTime, 3)
 
-  // sincronizar zorro SOLO si está cargado
+  const victoryZ = 222; // ejemplo, ajusta según tu nivel
+
+  if (gameRunning && duckyGroup.position.z >= victoryZ) {
+  victoryGame();
+}
   
 
   // mover zorro si el juego está corriendo (SOLO LA VISUAL, no el body)
@@ -482,6 +541,7 @@ const tick = () => {
   if (gameRunning && foxScene) {
   foxScene.position.x = duckyGroup.position.x
 }
+
 
 
   // Mover el body físico (no la shape) con velocidades — conserva velocidad Y para gravedad
@@ -605,3 +665,9 @@ const tick = () => {
 tick()
 
 document.getElementById('playBtn').addEventListener('click', startGame);
+document.getElementById('resetBtn').addEventListener('click', resetGame);
+document.getElementById('victoryResetBtn').addEventListener('click', () => {
+  initGame();
+  document.getElementById('victoryScreen').style.display = 'none';
+  gameRunning = true;
+});
