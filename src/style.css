@@ -17,3 +17,57 @@ body
     left: 0;
     outline: none;
 }
+
+#startScreen{
+  position: absolute;
+  inset: 0;
+  background:#000c;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+}
+
+#gameOverScreen{
+  position: absolute;
+  inset: 0;
+  background:#000c;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  display:none;
+}
+
+#gameOverScreen button{
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+#victoryScreen{
+  position: absolute;
+  inset: 0;
+  background:#000c;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  display:none;
+}
+
+#playBtn, #victoryResetBtn{
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
