@@ -39,19 +39,36 @@ floor.rotation.x = - Math.PI * 0.5
 /**
  * Lights
  */
-const ambientLight = new THREE.AmbientLight(0xffffff, 2.4)
+// Background oscuro
+scene.background = new THREE.Color(0x02030a)
+
+// Fog (niebla)
+scene.fog = new THREE.FogExp2(0x02030a, 0.055) // color, densidad
+
+// Ambient muy tenue y azul
+const ambientLight = new THREE.AmbientLight(0x223355, 0.4)
 scene.add(ambientLight)
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 2.8)
-directionalLight.castShadow = true
-directionalLight.shadow.mapSize.set(1024, 1024)
-directionalLight.shadow.camera.far = 15
-directionalLight.shadow.camera.left = - 7
-directionalLight.shadow.camera.top = 7
-directionalLight.shadow.camera.right = 7
-directionalLight.shadow.camera.bottom = - 7
-directionalLight.position.set(5, 5, 5)
-scene.add(directionalLight)
+// Moon light (direccional)
+const moonLight = new THREE.DirectionalLight(0x88aaff, 0.6)
+moonLight.position.set(-10, 10, -10)
+moonLight.castShadow = true
+scene.add(moonLight)
+
+// Luz que sigue al jugador (linterna)
+const flashlight = new THREE.SpotLight(0xaaaaff, 5, 10, Math.PI * 0.2, 0.5, 2)
+flashlight.castShadow = true
+scene.add(flashlight)
+
+// crear target dedicado y añadirlo a la escena
+const flashlightTarget = new THREE.Object3D()
+scene.add(flashlightTarget)
+
+// asignar el target del spotLight
+flashlight.target = flashlightTarget
+
+
+
 
 /**
  * Sizes
@@ -275,12 +292,13 @@ const height = 1.8;
 const numSegments = 12;
 
 // crea la forma y el body dinámico
-const duckShape = new CANNON.Sphere(1);
-const duckBody = new CANNON.Body({ mass: 5 });
+const duckShape = new CANNON.Sphere(0.8);
+const duckBody = new CANNON.Body({ mass: 8 });
 duckBody.addShape(duckShape); // puede añadirse con offsets para shapes compuestos
 // posición inicial (coincidir con la posición del group)
 duckBody.position.set(0, 0.9, 0);
 world.addBody(duckBody);
+flashlight.target = duckyGroup
 
 
 // opcional: cuerpo estático para el suelo (evita que atraviese)
@@ -324,6 +342,21 @@ function setupDuckyAnimations() {
 }
 
 setupDuckyAnimations();
+
+gsap.to(moonLight, {
+  intensity: 0.4,
+  duration: 3,
+  repeat: -1,
+  yoyo: true,
+  ease: "sine.inOut"
+});
+
+gsap.to(scene.fog.color, {
+  r: 0.1,
+  g: 0.05,
+  b: 0.2,
+  duration: 10,
+});
 
 
 /**
@@ -473,6 +506,18 @@ const tick = () => {
 
   // Render
   renderer.render(scene, camera)
+
+  flashlight.position.copy(camera.position)
+
+  // actualizar target para que apunte al ducky
+  flashlightTarget.position.copy(duckyGroup.position)
+
+  // garantizar que la jerarquía de matrices esté actualizada
+  flashlightTarget.updateMatrixWorld()
+  flashlight.updateMatrixWorld()
+
+  renderer.setClearColor(0x02030a);
+  renderer.toneMappingExposure = 0.6; 
 
   // cámara fija en X/Y y sigue a ducky solo en Z (con suavizado)
   const camFixedX = 0;         // X fijo de la cámara (ajusta)
