@@ -197,6 +197,8 @@ function (gltf)  {
 
 // Grupo para Ducky
 
+let patitaDer, patitaIzq, moño; // referencias si se quieren animar por separado
+
 const duckyGroup = new THREE.Group()
 duckyGroup.name = 'Ducky'
 duckyGroup.position.set(0, 0, 0) // ajustar la posición global del personaje
@@ -215,6 +217,7 @@ gltfLoader.load(
 gltfLoader.load(
   '/models/Ducky/Ducky_Patita_Derecha.glb',
   function (glb)  {
+        patitaDer = glb.scene;
        duckyGroup.add(glb.scene)
     }
 );
@@ -222,6 +225,7 @@ gltfLoader.load(
 gltfLoader.load(
   '/models/Ducky/Ducky_Patita_Izquierda.glb',
   function (glb)  {
+        patitaIzq = glb.scene;
        duckyGroup.add(glb.scene)
     }
 );
@@ -229,6 +233,7 @@ gltfLoader.load(
 gltfLoader.load(
   '/models/Ducky/Ducky_Monito.glb',
   function (glb)  {
+        moño = glb.scene;
        duckyGroup.add(glb.scene)
     }
 );
@@ -254,6 +259,45 @@ const groundBody = new CANNON.Body({ mass: 0 });
 groundBody.addShape(new CANNON.Plane());
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
 world.addBody(groundBody);
+
+
+// reemplazar el bloque setTimeout(() => { ... }, 1000);
+function startDuckyIdleAnimations() {
+  // espera hasta que las piezas existan
+  if (!patitaDer || !patitaIzq || !moño) {
+    requestAnimationFrame(startDuckyIdleAnimations);
+    return;
+  }
+
+  // PATITA DERECHA (más rápida)
+  gsap.to(patitaDer.rotation, {
+    x: 0.45,
+    duration: 0.22,
+    repeat: -1,
+    yoyo: true,
+    ease: "power1.inOut"
+  });
+
+  // PATITA IZQUIERDA (un pelito más lenta)
+  gsap.to(patitaIzq.rotation, {
+    x: -0.45,
+    duration: 0.22,
+    repeat: -1,
+    yoyo: true,
+    ease: "power1.inOut"
+  });
+
+  // MOÑO arriba y abajo (posición, no rotación)
+  gsap.to(moño.position, {
+    y: "+=0.04",
+    duration: 0.35,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+}
+
+startDuckyIdleAnimations();
 
 
 /**
