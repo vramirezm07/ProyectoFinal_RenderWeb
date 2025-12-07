@@ -9,6 +9,9 @@ console.log(GLTFLoader);
 console.log(CANNON);
 console.log(gsap);
 
+let gameRunning = false;
+
+
 /**
  * Base
  */
@@ -205,16 +208,21 @@ gltfLoader.load(
 );
 
 //Zorro
+let foxScene = null;
+let foxVelocityZ = 0;
+const foxMaxSpeed = 3; // velocidad máxima del zorro (m/s)
+const foxInitialZ = -25; // posición inicial Z del zorro
+let foxBody = null; // guardar referencia
+
 gltfLoader.load(
   '/models/Fox/glTF/Fox.gltf',
   function (gltf) {
     gltf.scene.scale.set(0.1, 0.1, 0.1);
-    gltf.scene.position.set(0, 0, -25);
-    scene.add(gltf.scene); 
-
+    gltf.scene.position.set(0, 0, foxInitialZ);
+    scene.add(gltf.scene);
+    foxScene = gltf.scene;
 
     // Crear un body físico estático para el zorro pero que NO colisione
-    // (de esta forma "atraviesa" los elementos del nivel)
     const box = new THREE.Box3().setFromObject(gltf.scene);
     const size = new THREE.Vector3();
     box.getSize(size);
@@ -228,26 +236,27 @@ gltfLoader.load(
     );
 
     const foxShape = new CANNON.Box(halfExtents);
-    const foxBody = new CANNON.Body({ mass: 0 }); // estático
+    foxBody = new CANNON.Body({ mass: 0 });
     foxBody.addShape(foxShape);
 
-    // posicionar/alinear con la malla
     foxBody.position.set(center.x, center.y, center.z);
     const q = gltf.scene.getWorldQuaternion(new THREE.Quaternion());
     foxBody.quaternion.set(q.x, q.y, q.z, q.w);
 
-    // Hacer que NO colisione con ningún otro body (puede "atravesar")
     foxBody.collisionFilterMask = 0;
-    // Alternativa: foxBody.collisionResponse = false; // evita respuesta física pero aún recibe contactos
     world.addBody(foxBody);
-
 
     // Animation
     mixer = new THREE.AnimationMixer(gltf.scene);
     const action = mixer.clipAction(gltf.animations[1]);
     action.play();
+
+    // generar velocidad inicial random
+    foxVelocityZ = (Math.random() - 0.5) * 2 * foxMaxSpeed
   }
 );
+
+
 
 // Grupo para Ducky
 
@@ -377,6 +386,8 @@ gsap.to(flashlight, {
   ease: "sine.inOut"
 });
 
+
+
 /**
 * Player Controls
 */
@@ -418,6 +429,26 @@ window.addEventListener('keyup', (event) => {
   }
 });
 
+// función para iniciar el juego
+function startGame(){
+  gameRunning = true;
+  document.getElementById('startScreen').style.display = 'none';
+
+
+  // velocidad inicial del zorro
+  foxVelocityZ = Math.random() * foxMaxSpeed * 6;
+}
+
+function endGame(){
+  gameRunning = false;
+  alert('¡El zorro te atrapó!');
+  resetGame();
+}
+
+function resetGame(){
+  location.reload();
+}
+
 
 /**
  * Animate
@@ -426,6 +457,7 @@ const clock = new THREE.Clock()
 let previousTime = 0
 const fixedTimeStep = 1 / 60; // 60Hz
 
+
 const tick = () => {
   const elapsedTime = clock.getElapsedTime()
   const deltaTime = elapsedTime - previousTime
@@ -433,14 +465,24 @@ const tick = () => {
 
   world.step(fixedTimeStep, deltaTime, 3)
 
+  // sincronizar zorro SOLO si está cargado
+  
+
+  // mover zorro si el juego está corriendo (SOLO LA VISUAL, no el body)
+  if (gameRunning && foxScene && foxBody) {
+    foxScene.position.z += foxVelocityZ * deltaTime;
+    // sincronizar solo Z del body para colisiones
+    foxBody.position.z = foxScene.position.z;
+  }
+
+
   // sincronizar Three.js con physics (Ducky)
   duckyGroup.position.copy(duckBody.position)
   duckyGroup.position.y -= 0.4 // ajustar offset si el modelo no está centrado en el origen
+  if (gameRunning && foxScene) {
+  foxScene.position.x = duckyGroup.position.x
+}
 
-  // Model animation
-  if (mixer) {
-    mixer.update(deltaTime)
-  }
 
   // Mover el body físico (no la shape) con velocidades — conserva velocidad Y para gravedad
   const moveSpeed = 5 // m/s ajusta según necesites
@@ -500,27 +542,19 @@ const tick = () => {
   if (movementVector.lengthSq() > 0.0001) {
     if (!isMoving) {
       isMoving = true;
-      tlPataDer.play();
-      tlPataIzq.play();
-      tlMoño.play();
+      if (tlPataDer) tlPataDer.play();
+      if (tlPataIzq) tlPataIzq.play();
+      if (tlMoño) tlMoño.play();
     }
   } else {
     if (isMoving) {
       isMoving = false;
-      tlPataDer.pause();
-      tlPataIzq.pause();
-      tlMoño.pause();
-
-      // opcional: volver a pose inicial
-      tlPataDer.progress(0);
-      tlPataIzq.progress(0);
-      tlMoño.progress(0);
+      if (tlPataDer) { tlPataDer.pause(); tlPataDer.progress(0); }
+      if (tlPataIzq) { tlPataIzq.pause(); tlPataIzq.progress(0); }
+      if (tlMoño)   { tlMoño.pause();   tlMoño.progress(0); }
     }
   }
 
-
-  // Update controls
-  // controls.update()
 
   // Render
   renderer.render(scene, camera)
@@ -538,12 +572,12 @@ const tick = () => {
   renderer.toneMappingExposure = 0.6; 
 
   // cámara fija en X/Y y sigue a ducky solo en Z (con suavizado)
-  const camFixedX = 0;         // X fijo de la cámara (ajusta)
-  const camFixedY = 4;         // Y fijo de la cámara (ajusta)
+  const camFixedX = 0;         
+  const camFixedY = 4;         
   const camZOffset = 7;        // distancia relativa al ducky en Z (ajusta)
   const camLerp = 0.08;        // suavizado (0 = instant, 1 = sin suavizado)
 
-  // destino Z objetivo (puedes invertir signo según orientación)
+  //
   const targetZ = duckyGroup.position.z + camZOffset;
 
   // mantener X/Y fijos y suavizar Z
@@ -554,9 +588,20 @@ const tick = () => {
   // mirar hacia el pato (manteniendo la misma altura de mirada)
   camera.lookAt(new THREE.Vector3(camFixedX, camFixedY - 0.5, duckyGroup.position.z));
 
+  if(gameRunning && foxScene){
+  const dx = duckyGroup.position.x - foxScene.position.x;
+  const dz = duckyGroup.position.z - foxScene.position.z;
+  const dist = Math.sqrt(dx*dx + dz*dz);
+
+  if(dist < 1.5){
+    endGame();
+  }
+}
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick)
 }
 
 tick()
+
+document.getElementById('playBtn').addEventListener('click', startGame);
