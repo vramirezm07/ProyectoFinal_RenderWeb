@@ -120,6 +120,7 @@ gltfLoader.load(
   '/models/Level_One/scene022.glb',
   function (glb)  {
        scene.add(glb.scene);
+       glb.scene.rotation.y = Math.PI * 1;
        
 
        // Crear colliders estáticos para cada mesh del nivel (AABB -> CANNON.Box)
@@ -382,6 +383,24 @@ if (movementVector.lengthSq() > 0.0001) {
 
     // Render
     renderer.render(scene, camera)
+
+    // cámara fija en X/Y y sigue a ducky solo en Z (con suavizado)
+  const camFixedX = 0;         // X fijo de la cámara (ajusta)
+  const camFixedY = 4;         // Y fijo de la cámara (ajusta)
+  const camZOffset = 7;        // distancia relativa al ducky en Z (ajusta)
+  const camLerp = 0.08;        // suavizado (0 = instant, 1 = sin suavizado)
+
+  // destino Z objetivo (puedes invertir signo según orientación)
+  const targetZ = duckyGroup.position.z + camZOffset;
+
+  // mantener X/Y fijos y suavizar Z
+  camera.position.x = camFixedX;
+  camera.position.y = camFixedY;
+  camera.position.z = THREE.MathUtils.lerp(camera.position.z, targetZ, camLerp);
+
+  // mirar hacia el pato (manteniendo la misma altura de mirada)
+  camera.lookAt(new THREE.Vector3(camFixedX, camFixedY - 0.5, duckyGroup.position.z));
+
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
