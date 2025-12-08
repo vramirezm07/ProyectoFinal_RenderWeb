@@ -11,7 +11,6 @@ console.log(gsap);
 
 let gameRunning = false;
 
-
 /**
  * Base
  */
