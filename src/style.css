@@ -20,17 +20,26 @@ body
     outline: none;
 }
 
+
 #startScreen{
   position: absolute;
-  inset: 0;
-  background:#000c;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  width: 800px;
+  padding: 30px;
+
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+
   color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+  border:2px solid rgb(255, 255, 255);
+  
   z-index:10;
   text-align: center;
+
+  border-radius: 8px;
 }
 h1{
   font-family: 'Rubik Burned', sans-serif;
@@ -45,7 +54,7 @@ p, li{
 }
 
 .starttext{
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-bottom: 30px;
 }
 
@@ -53,6 +62,7 @@ p, li{
   position: absolute;
   inset: 0;
   background:#000c;
+  backdrop-filter: blur(4px);
   color:white;
   display:flex;
   flex-direction:column;
@@ -62,34 +72,57 @@ p, li{
   display:none;
 }
 
-#gameOverScreen button{
-  padding: 12px 20px;
+#resetBtn{
+  padding: 0.5em 3em;
   font-size: 1.1rem;
-  border-radius: 8px;
-  border: none;
+  border-radius: 500px;
   cursor: pointer;
+  font-family: 'Rubik Burned', sans-serif;
+  font-size: 1.5rem;
 }
 
 #victoryScreen{
   position: absolute;
-  inset: 0;
-  background:#000c;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  width: 500px;
+  padding: 30px;
+
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+
   color:white;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+  border:2px solid rgb(255, 255, 255);
+  
   z-index:10;
+  text-align: center;
+
+  border-radius: 8px;
+  direction: column;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   display:none;
 }
 
 #playBtn, #victoryResetBtn{
   padding: 0.5em 3em;
   font-size: 1.1rem;
-  border-radius: 50px;
+  border-radius: 100px;
   border: none;
   cursor: pointer;
   font-family: 'Rubik Burned', sans-serif;
   font-size: 1.5rem;
+
+}
+ 
+
+#resetBtn:hover, #playBtn:hover, #victoryResetBtn:hover {
+  background-color: #000000;
+  color: #ffffff;
+  transition: all 0.8s ease;
 
 }
