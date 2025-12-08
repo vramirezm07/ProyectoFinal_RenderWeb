@@ -12,15 +12,14 @@
 
     <div id="startScreen">
         <h1>Ducky run!</h1>
-        <p>Ducky siempre fue el más pequeño de la escuela de animales. 
+        <p class ="starttext">Ducky siempre fue el más pequeño de la escuela de animales. 
             <br>
             Lo molestaban por ser “demasiado tierno” como para ser valiente.
             <br> Esta noche decidió demostrar su valor entrando solo a la escuela, en completa oscuridad.</p>
         <p>Tu misión: corre hasta el final del pasillo antes de que el zorro te alcance. ¡Buena suerte!</p>
-        <p><strong>Controles</strong>: WASD, SPACE salto</p>
+        <p><strong>Controles</strong></p>
         <ul>
-            <li><a><img src="/static/logos/constroles.svg" ></a></li>
-            <li></li>
+            <img src="../static/logos/controles.png" width="100">
         </ul>
         
         <button id="playBtn">Jugar</button>
@@ -28,21 +27,24 @@
     </div>
 
     <div id="gameOverScreen">
-        <h1>¡Te atrapó el zorro!</h1>
+        <h1>¡Oh no!</h1>
+        <p>El zorro te alcanzó. Inténtalo de nuevo.</p>
         <button id="resetBtn">Jugar de nuevo</button>
     </div>
     <canvas class="webgl"></canvas>
     <script type="module" src="./script.js"></script>
 
     <div id="victoryScreen">
-        <h1>¡Felicidades! Has pasado el juego</h1>
+        <h1>¡Felicidades!</h1>
+        <p>Lograste escapar del zorro.</p>
         <button id="victoryResetBtn">Jugar de nuevo</button>
     </div>
 
 <audio id="musicStart" src="/audio/music2.mp3" loop></audio>
 <audio id="bgMusic" src="/audio/music.mp3" loop></audio>
 
-
+<canva s class="webgl"></canvas>
+<script type="module" src="./script.js"></script>
 
 </body>
 
