@@ -670,8 +670,4 @@ document.getElementById('victoryResetBtn').addEventListener('click', () => {
   document.getElementById('victoryScreen').style.display = 'none';
   gameRunning = true;
 });
-import { defineConfig } from 'vite'
 
-export default defineConfig({
-  publicDir: 'static'  // indica a Vite que use 'static' en vez de 'public'
-})
