@@ -14,8 +14,8 @@ let gameRunning = false;
 /**
  * Base
  */
-// Debug
-const gui = new GUI()
+
+
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
